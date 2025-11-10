@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>BLE Servo Control</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    button { width: 120px; height: 50px; margin: 10px; font-size: 18px; }
+    #log { background: #000; color: #0f0; padding: 10px; height: 150px; overflow-y: scroll; }
+  </style>
+</head>
+<body>
+
+<h2>ESP32 BLE Servo Controller</h2>
+
+<button onclick="sendCmd('UP')">UP</button>
+<button onclick="sendCmd('DOWN')">DOWN</button><br>
+<button onclick="sendCmd('LEFT')">LEFT</button>
+<button onclick="sendCmd('RIGHT')">RIGHT</button><br><br>
+
+<button onclick="connectBLE()">Connect BLE</button>
+
+<h3>Log</h3>
+<div id="log"></div>
+
+<script>
+let rxChar, txChar;
+
+function log(msg) {
+  let box = document.getElementById("log");
+  box.innerHTML += msg + "<br>";
+  box.scrollTop = box.scrollHeight;
+}
+
+async function connectBLE() {
+  try {
+    log("Connecting...");
+
+    const device = await navigator.bluetooth.requestDevice({
+      filters: [{ namePrefix: "ESP32_BLE_SERVO" }],
+      optionalServices: ["6e400001-b5a3-f393-e0a9-e50e24dcca9e"]
+    });
+
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
+
+    rxChar = await service.getCharacteristic("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
+    txChar = await service.getCharacteristic("6e400003-b5a3-f393-e0a9-e50e24dcca9e");
+
+    await txChar.startNotifications();
+    txChar.addEventListener("characteristicvaluechanged", e => {
+      let value = new TextDecoder().decode(e.target.value);
+      log("ESP → Web: " + value);
+    });
+
+    log("✅ Connected!");
+  } catch (e) {
+    log("❌ " + e);
+  }
+}
+
+async function sendCmd(cmd) {
+  if (!rxChar) return log("⚠️ Chưa kết nối BLE!");
+  await rxChar.writeValue(new TextEncoder().encode(cmd));
+  log("Web → ESP: " + cmd);
+}
+</script>
+
+</body>
+</html>
