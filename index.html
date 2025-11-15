@@ -499,8 +499,22 @@
                     
                     <button class="btn btn-full" onclick="updatePIDYaw()">Update Yaw</button>
                 </div>
+                <div class="pid-section">
+                    <div class="pid-title">Thrust Linearization</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Exponent (0.5-1.0): <span id="thrustExpoDisplay">0.60</span></label>
+                        <div class="pid-input-group">
+                            <input type="range" class="slider" id="pidThrustExpoSlider" min="0.5" max="1.0" step="0.01" value="0.6" oninput="updateSliderValue('thrust', 'Expo')">
+                            <input type="number" class="form-control" id="pidThrustExpo" step="0.01" value="0.60" oninput="updateInputValue('thrust', 'Expo')">
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-full" onclick="updateThrustExpo()">Update Thrust Expo</button>
+                </div>
+                
             </div>
-
+            
             <div class="card">
                 <div class="card-title">IMU Telemetry</div>
                 <div class="telemetry-grid">
@@ -592,6 +606,13 @@
         const SERVICE_UUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
         const CHAR_UUID = '0000ffe1-0000-1000-8000-00805f9b34fb';
         
+
+        function updateThrustExpo() {
+            sendCommand({
+                cmd: 'SET_THRUST_EXPO',
+                exponent: parseFloat(document.getElementById('pidThrustExpo').value)
+            });
+        }
                 // Hàm đồng bộ slider với input
         function updateSliderValue(axis, param) {
             const slider = document.getElementById(`pid${axis.charAt(0).toUpperCase() + axis.slice(1)}${param}Slider`);
@@ -763,6 +784,10 @@
             document.getElementById('telPitch').textContent = '--';
             document.getElementById('telYaw').textContent = '--';
             document.getElementById('telThrottle').textContent = '--';
+            
+            document.getElementById('pidThrustExpo').value = 0.60;
+            document.getElementById('pidThrustExpoSlider').value = 0.60;
+            document.getElementById('thrustExpoDisplay').textContent = 0.60;
             
             document.getElementById('motor1').textContent = '--';
             document.getElementById('motor2').textContent = '--';
