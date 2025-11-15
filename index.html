@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -145,26 +146,71 @@
         }
         
         .form-group {
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         
         .form-label {
-            display: inline-block;
-            width: 50px;
-            font-size: 11px;
+            display: block;
+            font-size: 10px;
             font-weight: bold;
+            margin-bottom: 3px;
+            color: #555;
+        }
+        
+        .pid-input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .form-control {
-            width: calc(100% - 55px);
+            width: 60px;
             padding: 4px;
             border: 1px solid #ddd;
             font-size: 11px;
+            text-align: center;
         }
         
         .form-control:focus {
             border-color: #333;
             outline: none;
+        }
+        
+        .slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #ddd;
+            outline: none;
+            border-radius: 3px;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #333;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #333;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+        
+        .slider:hover::-webkit-slider-thumb {
+            background: #555;
+        }
+        
+        .slider:hover::-moz-range-thumb {
+            background: #555;
         }
         
         .log {
@@ -177,7 +223,7 @@
             font-size: 10px;
             border: 1px solid #333;
             line-height: 1.3;
-            white-space: pre-wrap;  /* THÊM DÒNG NÀY */
+            white-space: pre-wrap;
         }
         
         .telemetry-grid {
@@ -254,22 +300,27 @@
         }
 
         .pid-section {
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #ddd;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 3px;
         }
 
         .pid-section:last-child {
-            border-bottom: none;
             margin-bottom: 0;
-            padding-bottom: 0;
         }
 
         .pid-title {
             font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 11px;
+            margin-bottom: 8px;
+            font-size: 12px;
             color: #333;
+            text-align: center;
+            background: #333;
+            color: white;
+            padding: 4px;
+            border-radius: 2px;
         }
 
         .connection-info {
@@ -360,53 +411,92 @@
                 <div class="card-title">PID Tuning</div>
                 
                 <div class="pid-section">
-                    <div class="pid-title">Roll</div>
+                    <div class="pid-title">Roll PID</div>
+                    
                     <div class="form-group">
-                        <label class="form-label">Kp</label>
-                        <input type="number" class="form-control" id="pidRollKp" step="0.1" value="2.5">
+                        <label class="form-label">Kp: <span id="rollKpDisplay">2.5</span></label>
+                        <div class="pid-input-group">
+                            <input type="range" class="slider" id="pidRollKpSlider" min="0" max="10" step="0.1" value="2.5" oninput="updateSliderValue('roll', 'Kp')">
+                            <input type="number" class="form-control" id="pidRollKp" step="0.1" value="2.5" oninput="updateInputValue('roll', 'Kp')">
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label">Ki</label>
-                        <input type="number" class="form-control" id="pidRollKi" step="0.01" value="0.15">
+                        <label class="form-label">Ki: <span id="rollKiDisplay">0.15</span></label>
+                        <div class="pid-input-group">
+                            <input type="range" class="slider" id="pidRollKiSlider" min="0" max="1" step="0.01" value="0.15" oninput="updateSliderValue('roll', 'Ki')">
+                            <input type="number" class="form-control" id="pidRollKi" step="0.01" value="0.15" oninput="updateInputValue('roll', 'Ki')">
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label">Kd</label>
-                        <input type="number" class="form-control" id="pidRollKd" step="0.1" value="0.25">
+                        <label class="form-label">Kd: <span id="rollKdDisplay">0.25</span></label>
+                        <div class="pid-input-group">
+                            <input type="range" class="slider" id="pidRollKdSlider" min="0" max="2" step="0.01" value="0.25" oninput="updateSliderValue('roll', 'Kd')">
+                            <input type="number" class="form-control" id="pidRollKd" step="0.01" value="0.25" oninput="updateInputValue('roll', 'Kd')">
+                        </div>
                     </div>
+                    
                     <button class="btn btn-full" onclick="updatePIDRoll()">Update Roll</button>
                 </div>
                 
                 <div class="pid-section">
-                    <div class="pid-title">Pitch</div>
+                    <div class="pid-title">Pitch PID</div>
+                    
                     <div class="form-group">
-                        <label class="form-label">Kp</label>
-                        <input type="number" class="form-control" id="pidPitchKp" step="0.1" value="2.5">
+                        <label class="form-label">Kp: <span id="pitchKpDisplay">2.5</span></label>
+                        <div class="pid-input-group">
+                            <input type="range" class="slider" id="pidPitchKpSlider" min="0" max="10" step="0.1" value="2.5" oninput="updateSliderValue('pitch', 'Kp')">
+                            <input type="number" class="form-control" id="pidPitchKp" step="0.1" value="2.5" oninput="updateInputValue('pitch', 'Kp')">
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label">Ki</label>
-                        <input type="number" class="form-control" id="pidPitchKi" step="0.01" value="0.15">
+                        <label class="form-label">Ki: <span id="pitchKiDisplay">0.15</span></label>
+                        <div class="pid-input-group">
+                            <input type="range" class="slider" id="pidPitchKiSlider" min="0" max="1" step="0.01" value="0.15" oninput="updateSliderValue('pitch', 'Ki')">
+                            <input type="number" class="form-control" id="pidPitchKi" step="0.01" value="0.15" oninput="updateInputValue('pitch', 'Ki')">
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label">Kd</label>
-                        <input type="number" class="form-control" id="pidPitchKd" step="0.1" value="0.25">
+                        <label class="form-label">Kd: <span id="pitchKdDisplay">0.25</span></label>
+                        <div class="pid-input-group">
+                            <input type="range" class="slider" id="pidPitchKdSlider" min="0" max="2" step="0.01" value="0.25" oninput="updateSliderValue('pitch', 'Kd')">
+                            <input type="number" class="form-control" id="pidPitchKd" step="0.01" value="0.25" oninput="updateInputValue('pitch', 'Kd')">
+                        </div>
                     </div>
+                    
                     <button class="btn btn-full" onclick="updatePIDPitch()">Update Pitch</button>
                 </div>
                 
                 <div class="pid-section">
-                    <div class="pid-title">Yaw</div>
+                    <div class="pid-title">Yaw PID</div>
+                    
                     <div class="form-group">
-                        <label class="form-label">Kp</label>
-                        <input type="number" class="form-control" id="pidYawKp" step="0.1" value="2.0">
+                        <label class="form-label">Kp: <span id="yawKpDisplay">2.0</span></label>
+                        <div class="pid-input-group">
+                            <input type="range" class="slider" id="pidYawKpSlider" min="0" max="10" step="0.1" value="2.0" oninput="updateSliderValue('yaw', 'Kp')">
+                            <input type="number" class="form-control" id="pidYawKp" step="0.1" value="2.0" oninput="updateInputValue('yaw', 'Kp')">
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label">Ki</label>
-                        <input type="number" class="form-control" id="pidYawKi" step="0.01" value="0.08">
+                        <label class="form-label">Ki: <span id="yawKiDisplay">0.08</span></label>
+                        <div class="pid-input-group">
+                            <input type="range" class="slider" id="pidYawKiSlider" min="0" max="1" step="0.01" value="0.08" oninput="updateSliderValue('yaw', 'Ki')">
+                            <input type="number" class="form-control" id="pidYawKi" step="0.01" value="0.08" oninput="updateInputValue('yaw', 'Ki')">
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label">Kd</label>
-                        <input type="number" class="form-control" id="pidYawKd" step="0.1" value="0.08">
+                        <label class="form-label">Kd: <span id="yawKdDisplay">0.08</span></label>
+                        <div class="pid-input-group">
+                            <input type="range" class="slider" id="pidYawKdSlider" min="0" max="2" step="0.01" value="0.08" oninput="updateSliderValue('yaw', 'Kd')">
+                            <input type="number" class="form-control" id="pidYawKd" step="0.01" value="0.08" oninput="updateInputValue('yaw', 'Kd')">
+                        </div>
                     </div>
+                    
                     <button class="btn btn-full" onclick="updatePIDYaw()">Update Yaw</button>
                 </div>
             </div>
@@ -482,36 +572,61 @@
             </div>
         </div>
     </div>
-
-    <script>
+   <script>
         let bluetoothDevice;
         let bluetoothCharacteristic;
         let isConnected = false;
         let startTime = Date.now();
         let receivedBuffer = '';
         
+        let commandInFlight = false;
+        let lastCommandTime = 0;
+        const COMMAND_MIN_INTERVAL = 100;
+        
+        let parseFailCount = 0;
+        const MAX_PARSE_FAILURES = 10;
+        
+        let lastTelemetryTime = 0;
+        const TELEMETRY_TIMEOUT = 5000;
+        
         const SERVICE_UUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
         const CHAR_UUID = '0000ffe1-0000-1000-8000-00805f9b34fb';
         
+                // Hàm đồng bộ slider với input
+        function updateSliderValue(axis, param) {
+            const slider = document.getElementById(`pid${axis.charAt(0).toUpperCase() + axis.slice(1)}${param}Slider`);
+            const input = document.getElementById(`pid${axis.charAt(0).toUpperCase() + axis.slice(1)}${param}`);
+            const display = document.getElementById(`${axis}${param}Display`);
+            
+            input.value = slider.value;
+            display.textContent = slider.value;
+        }
+        
+        // Hàm đồng bộ input với slider
+        function updateInputValue(axis, param) {
+            const slider = document.getElementById(`pid${axis.charAt(0).toUpperCase() + axis.slice(1)}${param}Slider`);
+            const input = document.getElementById(`pid${axis.charAt(0).toUpperCase() + axis.slice(1)}${param}`);
+            const display = document.getElementById(`${axis}${param}Display`);
+            
+            slider.value = input.value;
+            display.textContent = input.value;
+        }
         function addLog(msg, type = 'info') {
             const log = document.getElementById('logDisplay');
             const time = new Date().toLocaleTimeString();
             
-            // Tạo 1 dòng riêng biệt
             const logLine = document.createElement('div');
             logLine.textContent = `[${time}] ${msg}`;
             
-            // Thêm màu sắc theo type
-            if (type === 'error') {
-                logLine.style.color = '#ff4444';
-            } else if (type === 'success') {
-                logLine.style.color = '#44ff44';
-            } else {
-                logLine.style.color = '#0f0';
-            }
+            if (type === 'error') logLine.style.color = '#ff4444';
+            else if (type === 'success') logLine.style.color = '#44ff44';
+            else if (type === 'warn') logLine.style.color = '#ffaa00';
+            else logLine.style.color = '#0f0';
             
             log.appendChild(logLine);
             log.scrollTop = log.scrollHeight;
+            
+            if (log.children.length > 200) log.removeChild(log.firstChild);
         }
         
         function clearLog() {
@@ -529,63 +644,142 @@
         
         setInterval(updateUptime, 1000);
         
+        function checkConnectionHealth() {
+            if (isConnected) {
+                const timeSinceLastTelemetry = Date.now() - lastTelemetryTime;
+                if (timeSinceLastTelemetry > TELEMETRY_TIMEOUT && lastTelemetryTime > 0) {
+                    addLog('WARN: No telemetry for ' + Math.floor(timeSinceLastTelemetry/1000) + 's', 'warn');
+                }
+            }
+        }
+        
+        setInterval(checkConnectionHealth, 2000);
+        
         async function connectToDrone() {
             try {
                 addLog('Checking Web Bluetooth...');
                 
                 if (!navigator.bluetooth) {
-                    addLog('ERROR: Web Bluetooth not supported');
+                    addLog('ERROR: Web Bluetooth not supported', 'error');
                     return;
                 }
                 
                 const available = await navigator.bluetooth.getAvailability();
                 if (!available) {
-                    addLog('ERROR: Bluetooth not available');
+                    addLog('ERROR: Bluetooth not available', 'error');
                     return;
                 }
                 
-                addLog('Scanning for devices...');
+                addLog('Scanning for ESP32_Drone...');
                 
                 bluetoothDevice = await navigator.bluetooth.requestDevice({
-                    acceptAllDevices: true,
+                    filters: [{
+                        name: 'ESP32_Drone'
+                    }],
                     optionalServices: [SERVICE_UUID]
                 });
                 
-                addLog('Device: ' + (bluetoothDevice.name || 'Unknown'));
-                addLog('Connecting...');
+                addLog('Device: ' + bluetoothDevice.name, 'success');
+                addLog('Connecting to GATT...');
                 
                 const server = await bluetoothDevice.gatt.connect();
-                addLog('GATT connected');
+                addLog('GATT connected', 'success');
                 
+                // ✅ ĐỢI 500ms cho GATT ổn định
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                addLog('Getting service...');
                 const service = await server.getPrimaryService(SERVICE_UUID);
-                addLog('Service found');
+                addLog('Service found', 'success');
                 
+                addLog('Getting characteristic...');
                 bluetoothCharacteristic = await service.getCharacteristic(CHAR_UUID);
-                addLog('Characteristic found');
+                addLog('Characteristic found', 'success');
                 
+                // ✅ ĐỢI 300ms trước khi enable notifications
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                addLog('Starting notifications...');
                 await bluetoothCharacteristic.startNotifications();
+                addLog('Notifications enabled', 'success');
+                
+                // ✅ GẮN LISTENER SAU KHI ENABLE NOTIFICATIONS
                 bluetoothCharacteristic.addEventListener('characteristicvaluechanged', handleNotification);
                 
+                // ✅ ĐỢI THÊM 500ms cho MTU exchange
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
                 isConnected = true;
+                lastTelemetryTime = Date.now();
+                receivedBuffer = '';
+                parseFailCount = 0;
+                
                 document.getElementById('connectionStatus').textContent = 'Connected';
                 document.getElementById('connectionStatus').className = 'status-value status-connected';
                 document.getElementById('connectBtn').disabled = true;
                 document.getElementById('disconnectBtn').disabled = false;
                 
-                addLog('SUCCESS: Connected');
+                addLog('========================================', 'success');
+                addLog('CONNECTION SUCCESSFUL', 'success');
+                addLog('MTU negotiation complete', 'success');
+                addLog('========================================', 'success');
                 
                 bluetoothDevice.addEventListener('gattserverdisconnected', () => {
-                    addLog('Device disconnected');
+                    addLog('DEVICE DISCONNECTED', 'error');
                     isConnected = false;
                     document.getElementById('connectionStatus').textContent = 'Disconnected';
                     document.getElementById('connectionStatus').className = 'status-value status-disconnected';
                     document.getElementById('connectBtn').disabled = false;
                     document.getElementById('disconnectBtn').disabled = true;
+                    resetAllDisplays();
                 });
                 
             } catch (error) {
-                addLog('ERROR: ' + error.message);
+                addLog('CONNECTION FAILED: ' + error.message, 'error');
+                
+                if (error.name === 'NotFoundError') {
+                    addLog('No ESP32_Drone found. Check:', 'error');
+                    addLog('1. ESP32 powered on', 'error');
+                    addLog('2. BLE advertising', 'error');
+                    addLog('3. Device name = "ESP32_Drone"', 'error');
+                } else if (error.name === 'NetworkError') {
+                    addLog('Connection lost during setup', 'error');
+                    addLog('Try again or restart ESP32', 'error');
+                }
+                
+                // ✅ CLEANUP ON FAILURE
+                if (bluetoothDevice && bluetoothDevice.gatt.connected) {
+                    try {
+                        await bluetoothDevice.gatt.disconnect();
+                    } catch (e) {}
+                }
+                isConnected = false;
+                resetAllDisplays();
             }
+        }
+        // ✅ THÊM HÀM RESET DISPLAY
+        function resetAllDisplays() {
+            document.getElementById('telRoll').textContent = '--';
+            document.getElementById('telPitch').textContent = '--';
+            document.getElementById('telYaw').textContent = '--';
+            document.getElementById('telThrottle').textContent = '--';
+            
+            document.getElementById('motor1').textContent = '--';
+            document.getElementById('motor2').textContent = '--';
+            document.getElementById('motor3').textContent = '--';
+            document.getElementById('motor4').textContent = '--';
+            
+            document.getElementById('rcCh1').textContent = '--';
+            document.getElementById('rcCh2').textContent = '--';
+            document.getElementById('rcCh3').textContent = '--';
+            document.getElementById('rcCh4').textContent = '--';
+            document.getElementById('rcCh5').textContent = '--';
+            document.getElementById('rcCh6').textContent = '--';
+            
+            document.getElementById('armedStatus').textContent = 'DISARMED';
+            document.getElementById('armedStatus').className = 'status-value status-disarmed';
+            document.getElementById('mpuStatus').textContent = '--';
+            document.getElementById('rcStatus').textContent = '--';
         }
         
         async function disconnectFromDrone() {
@@ -598,90 +792,161 @@
                 document.getElementById('connectionStatus').className = 'status-value status-disconnected';
                 document.getElementById('connectBtn').disabled = false;
                 document.getElementById('disconnectBtn').disabled = true;
-                addLog('Disconnected');
+                resetAllDisplays();  // ✅ Reset displays
             } catch (error) {
-                addLog('ERROR: ' + error.message);
+                addLog('Disconnect error: ' + error.message, 'error');
             }
         }
         
+     // ✅ FIXED: Nhận JSON với newline delimiter
         function handleNotification(event) {
             const value = new TextDecoder().decode(event.target.value);
             receivedBuffer += value;
             
-            if (receivedBuffer.includes('}')) {
-                const endIndex = receivedBuffer.lastIndexOf('}') + 1;
-                const jsonStr = receivedBuffer.substring(0, endIndex);
+            lastTelemetryTime = Date.now();
+            
+            // Xử lý nhiều packets
+            let processedCount = 0;
+            const maxIterations = 10;
+            
+            while (receivedBuffer.includes('\n') && processedCount < maxIterations) {
+                const endIndex = receivedBuffer.indexOf('\n');
+                const jsonStr = receivedBuffer.substring(0, endIndex).trim();
                 
-                try {
-                    const data = JSON.parse(jsonStr);
-                    
-                    if (data.t === 'imu' || data.t === 'tele') {
-                        updateTelemetry(data);
-                    } else if (data.t === 'stat') {
-                        updateStatus(data);
-                    } else if (data.t === 'resp') {
-                        addLog(data.st + ': ' + data.msg);
-                    }
-                    
-                    receivedBuffer = receivedBuffer.substring(endIndex);
-                    
-                } catch (e) {
-                    if (receivedBuffer.length > 500) {
-                        receivedBuffer = '';
+                if (jsonStr.length > 0) {
+                    try {
+                        const data = JSON.parse(jsonStr);
+                        parseFailCount = 0;
+                        processedCount++;
+                        
+                        // ✅ XỬ LÝ PACKET TỐI ƯU
+                        if (data.t === 'a') {  // "a" = all data
+                            const d = data.d;
+                            if (!d || d.length < 20) continue;
+                            
+                            // IMU [0-5]
+                            document.getElementById('telRoll').textContent = d[0].toFixed(1);
+                            document.getElementById('telPitch').textContent = d[1].toFixed(1);
+                            document.getElementById('telYaw').textContent = d[2].toFixed(1);
+                            
+                            // Motors [6-9]
+                            document.getElementById('motor1').textContent = d[6];
+                            document.getElementById('motor2').textContent = d[7];
+                            document.getElementById('motor3').textContent = d[8];
+                            document.getElementById('motor4').textContent = d[9];
+                            
+                            // RC channels [10-15]
+                            document.getElementById('rcCh1').textContent = d[10];
+                            document.getElementById('rcCh2').textContent = d[11];
+                            document.getElementById('rcCh3').textContent = d[12];
+                            document.getElementById('rcCh4').textContent = d[13];
+                            document.getElementById('rcCh5').textContent = d[14];
+                            document.getElementById('rcCh6').textContent = d[15];
+                            
+                            // Throttle [16]
+                            document.getElementById('telThrottle').textContent = d[16];
+                            
+                            // Status [17-19]
+                            const armed = d[17] === 1;
+                            const mpuOk = d[18] === 1;
+                            const rcOk = d[19] === 1;
+                            
+                            const armedEl = document.getElementById('armedStatus');
+                            armedEl.textContent = armed ? 'ARMED' : 'DISARMED';
+                            armedEl.className = armed ? 'status-value status-armed' : 'status-value status-disarmed';
+                            
+                            const mpuEl = document.getElementById('mpuStatus');
+                            mpuEl.textContent = mpuOk ? 'OK' : 'ERROR';
+                            mpuEl.className = mpuOk ? 'status-value status-ok' : 'status-value status-error';
+                            
+                            const rcEl = document.getElementById('rcStatus');
+                            rcEl.textContent = rcOk ? 'OK' : 'LOST';
+                            rcEl.className = rcOk ? 'status-value status-ok' : 'status-value status-error';
+                        }
+                        // Response messages
+                        else if (data.t === 'resp') {
+                            addLog(data.st + ': ' + data.msg, 
+                                data.st === 'ERROR' ? 'error' : 
+                                data.st === 'SUCCESS' ? 'success' : 'info');
+                        }
+                        
+                    } catch (e) {
+                        parseFailCount++;
+                        if (parseFailCount >= MAX_PARSE_FAILURES) {
+                            addLog('Too many parse errors, resetting buffer', 'error');
+                            receivedBuffer = '';
+                            parseFailCount = 0;
+                            break;
+                        }
                     }
                 }
+                
+                receivedBuffer = receivedBuffer.substring(endIndex + 1);
+            }
+            
+            if (receivedBuffer.length > 500) {
+                receivedBuffer = '';
             }
         }
-        
-        function updateTelemetry(data) {
-            if (data.i) {
-                document.getElementById('telRoll').textContent = data.i.r.toFixed(2);
-                document.getElementById('telPitch').textContent = data.i.p.toFixed(2);
-                document.getElementById('telYaw').textContent = data.i.y.toFixed(2);
-            }
-            
-            if (data.m) {
-                document.getElementById('motor1').textContent = data.m['1'];
-                document.getElementById('motor2').textContent = data.m['2'];
-                document.getElementById('motor3').textContent = data.m['3'];
-                document.getElementById('motor4').textContent = data.m['4'];
-            }
-        }
-        
-        function updateStatus(data) {
-            if (data.s) {
-                document.getElementById('telThrottle').textContent = data.s.t;
-            }
-            
-            if (data.arm !== undefined) {
-                const armedEl = document.getElementById('armedStatus');
-                armedEl.textContent = data.arm ? 'ARMED' : 'DISARMED';
-                armedEl.className = data.arm ? 'status-value status-armed' : 'status-value status-disarmed';
-            }
-            
-            if (data.mpu !== undefined) {
-                const mpuEl = document.getElementById('mpuStatus');
-                mpuEl.textContent = data.mpu ? 'OK' : 'ERROR';
-                mpuEl.className = data.mpu ? 'status-value status-ok' : 'status-value status-error';
-            }
-            
-            document.getElementById('rcStatus').textContent = 'OK';
-            document.getElementById('rcStatus').className = 'status-value status-ok';
-        }
-        
+                
         async function sendCommand(cmd) {
             if (!isConnected) {
-                addLog('ERROR: Not connected');
+                addLog('ERROR: Not connected', 'error');
                 return;
             }
             
-            try {
-                const str = JSON.stringify(cmd);
-                await bluetoothCharacteristic.writeValue(new TextEncoder().encode(str));
-                addLog('Sent: ' + cmd.cmd);
-            } catch (error) {
-                addLog('ERROR: ' + error.message);
+            const now = Date.now();
+            
+            if (commandInFlight) {
+                addLog('WARN: Command in progress', 'warn');
+                return;
             }
+            
+            if (now - lastCommandTime < COMMAND_MIN_INTERVAL) {
+                addLog('WARN: Commands too fast', 'warn');
+                return;
+            }
+            
+            // ✅ RETRY LOGIC
+            const maxRetries = 3;
+            let attempt = 0;
+            
+            while (attempt < maxRetries) {
+                try {
+                    commandInFlight = true;
+                    const str = JSON.stringify(cmd);
+                    
+                    if (!bluetoothCharacteristic) {
+                        throw new Error('Characteristic not available');
+                    }
+                    
+                    await bluetoothCharacteristic.writeValue(new TextEncoder().encode(str));
+                    addLog('Sent: ' + cmd.cmd, 'info');
+                    lastCommandTime = now;
+                    return; // ✅ SUCCESS
+                    
+                } catch (error) {
+                    attempt++;
+                    addLog(`ERROR (attempt ${attempt}/${maxRetries}): ${error.message}`, 'error');
+                    
+                    if (error.name === 'NetworkError') {
+                        addLog('Connection lost', 'error');
+                        isConnected = false;
+                        document.getElementById('connectionStatus').textContent = 'Disconnected';
+                        document.getElementById('connectionStatus').className = 'status-value status-disconnected';
+                        break;
+                    }
+                    
+                    // ✅ ĐỢI TRƯỚC KHI RETRY
+                    if (attempt < maxRetries) {
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                    }
+                } finally {
+                    commandInFlight = false;
+                }
+            }
+            
+            addLog('Command failed after ' + maxRetries + ' attempts', 'error');
         }
         
         function updatePIDRoll() {
@@ -738,7 +1003,14 @@
             });
         }
         
-        addLog('Drone Controller initialized');
+        addLog('========================================');
+        addLog('ESP32 Drone Controller v2.2');
+        addLog('Device filter: ESP32_Drone only');
+        addLog('========================================');
+        addLog('Click Connect to start');
+        
+        // ✅ Set "--" khi load trang
+        resetAllDisplays();
     </script>
 </body>
 </html>
